@@ -1,0 +1,9 @@
+services:
+  api:
+    build: .
+    image: mini-api:local
+    container_name: mini-api
+    ports:
+      - "8000:8000"
+    environment:
+      APP_VERSION: local
