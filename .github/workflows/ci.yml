@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+
+jobs:
+  build-test:
+    runs-on: self-hosted   # ⬅️ ключевой момент
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build docker image
+        run: |
+          docker build -t ssrd-api:test .
+
+      - name: Run tests
+        run: |
+          docker compose run --rm api pytest
