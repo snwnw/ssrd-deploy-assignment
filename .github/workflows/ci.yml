@@ -5,6 +5,10 @@ on:
     branches: [ "main" ]
   pull_request:
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build-test:
     runs-on: self-hosted
@@ -13,9 +17,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Build docker image
+      - name: Login to GHCR
         run: |
-          docker build -t ssrd-api:test .
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build and push docker image
+        run: |
+          IMAGE=ghcr.io/${{ github.repository_owner }}/ssrd-api:latest
+          docker build -t $IMAGE .
+          docker push $IMAGE
 
       - name: Run tests
         run: |
@@ -32,5 +42,4 @@ jobs:
 
       - name: Deploy to staging
         run: |
-          sudo kubectl apply -f k8s/deployment.yaml -n staging
-          sudo kubectl apply -f k8s/service.yaml -n staging
+          sudo kubectl apply -n staging -f k8s/

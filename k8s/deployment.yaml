@@ -17,6 +17,8 @@ spec:
       containers:
         - name: mini-api
           image: ssrd-api:latest
+          image: ghcr.io/snwnw/ssrd-api:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8000
           readinessProbe:
