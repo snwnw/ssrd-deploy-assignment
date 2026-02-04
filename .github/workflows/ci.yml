@@ -23,9 +23,16 @@ jobs:
 
       - name: Build and push docker image
         run: |
-          IMAGE=ghcr.io/${{ github.repository_owner }}/ssrd-api:latest
-          docker build -t $IMAGE .
-          docker push $IMAGE
+          - name: Set image tag
+        run: echo "IMAGE_TAG=${GITHUB_SHA}" >> $GITHUB_ENV
+
+      - name: Build docker image
+        run: |
+          docker build -t ghcr.io/${{ github.repository_owner }}/ssrd-api:${IMAGE_TAG} .
+
+      - name: Push docker image
+        run: |
+          docker push ghcr.io/${{ github.repository_owner }}/ssrd-api:${IMAGE_TAG}
 
       - name: Run tests
         run: |
@@ -40,6 +47,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Set image tag
+        run: echo "IMAGE_TAG=${GITHUB_SHA}" >> $GITHUB_ENV
+
       - name: Deploy to staging
         run: |
-          sudo kubectl apply -n staging -f k8s/
+          sudo kubectl set image deployment/mini-api \
+          mini-api=ghcr.io/${{ github.repository_owner }}/ssrd-api:${IMAGE_TAG} \
+          -n staging
+
