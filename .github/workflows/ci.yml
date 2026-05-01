@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run linter
-        run: docker compose run --rm api ruff check .
+        run: docker compose run --rm api ruff check . --no-cache
 
   test:
     name: Unit tests
@@ -28,8 +28,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Run tests with coverage
-        run: docker compose run --rm api pytest --cov --cov-report=term-missing
+      - name: Run tests
+        run: docker compose run --rm api pytest
 
   build-and-push:
     name: Build and Push Docker image
