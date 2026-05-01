@@ -4,6 +4,6 @@ __pycache__
 *.pyd
 .venv
 venv
+.env
 .git
 .gitignore
-tests

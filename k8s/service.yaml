@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mini-api
+  namespace: staging
 spec:
   selector:
     app: mini-api

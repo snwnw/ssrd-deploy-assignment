@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mini-api
+  namespace: staging
   labels:
     app: mini-api
 spec:
@@ -16,7 +17,6 @@ spec:
     spec:
       containers:
         - name: mini-api
-          image: ssrd-api:latest
           image: ghcr.io/snwnw/ssrd-api:latest
           imagePullPolicy: Always
           ports:
@@ -27,3 +27,16 @@ spec:
               port: 8000
             initialDelaySeconds: 2
             periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+              cpu: "200m"
