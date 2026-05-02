@@ -28,3 +28,12 @@ services:
     container_name: redis
     ports:
       - "6379:6379"
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - api
